@@ -19,6 +19,7 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
+        pkgsCross = import nixpkgs { inherit system; crossSystem = { config = "mips64-elf"; }; };
 
         libdragon = pkgs.fetchFromGitHub {
           owner = "DragonMinded";
@@ -66,6 +67,22 @@
           '';
         };
 
+        packages.n64tool = pkgs.stdenv.mkDerivation {
+          pname = "n64tool";
+          version = "1.0";
+
+          src = libdragon;
+
+          buildPhase = ''
+            gcc -o n64tool tools/n64tool.c
+          '';
+
+          installPhase = ''
+            mkdir -p $out/bin
+            cp n64tool $out/bin
+          '';
+        };
+
         packages.unfloader = pkgs.stdenv.mkDerivation {
           pname = "unfloader";
           version = unfloader-version;
@@ -77,6 +94,8 @@
             ln -s ./UNFLoader $out/bin/unfloader
           '';
         };
+
+        packages.toolchain = pkgsCross.buildPackages.gcc;
 
         apps.chksum64 = {
           type = "app";
@@ -92,7 +111,8 @@
           {
             buildInputs = [
               self.packages.${system}.chksum64
-              # self.packages.${system}.unfloader
+              self.packages.${system}.n64tool
+              self.packages.${system}.toolchain
             ];
           };
       }
