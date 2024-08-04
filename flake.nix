@@ -74,6 +74,7 @@
           installPhase = ''
             mkdir -p $out/bin
             cp UNFLoader $out/bin
+            ln -s ./UNFLoader $out/bin/unfloader
           '';
         };
 
