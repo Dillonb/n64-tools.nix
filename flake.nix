@@ -40,7 +40,9 @@
 
       devShells.default = pkgs.mkShell
         {
-          buildInputs = [];
+          buildInputs = [
+            self.packages.${system}.chksum64
+          ];
         };
     }
   );
