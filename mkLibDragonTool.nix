@@ -6,7 +6,7 @@ pkgs.stdenv.mkDerivation {
   src = libdragon_src;
 
   buildPhase = ''
-    gcc -o ${tool} tools/${tool}.c
+    $CC -o ${tool} tools/${tool}.c
     '';
 
   installPhase = ''

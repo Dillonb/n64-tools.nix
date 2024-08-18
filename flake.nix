@@ -58,7 +58,7 @@ description = "Various Nintendo 64 Homebrew Development Tools";
           src = libdragon;
 
           buildPhase = ''
-            gcc -o chksum64 tools/chksum64.c
+            $CC -o chksum64 tools/chksum64.c
           '';
 
           installPhase = ''
@@ -74,7 +74,7 @@ description = "Various Nintendo 64 Homebrew Development Tools";
           src = libdragon;
 
           buildPhase = ''
-            gcc -o n64tool tools/n64tool.c
+            $CC -o n64tool tools/n64tool.c
           '';
 
           installPhase = ''
