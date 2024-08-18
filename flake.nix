@@ -1,5 +1,5 @@
 {
-  description = "Various Nintendo 64 Homebrew Development Tools";
+description = "Various Nintendo 64 Homebrew Development Tools";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
@@ -97,6 +97,8 @@
 
         packages.toolchain = pkgsCross.buildPackages.gcc;
 
+        packages.mkLibDragon = (import ./mkLibDragon.nix) {pkgs = pkgs; pkgsCross = pkgsCross; };
+
         apps.chksum64 = {
           type = "app";
           program = "${self.packages.${system}.chksum64}/bin/chksum64";
@@ -114,6 +116,10 @@
               self.packages.${system}.n64tool
               self.packages.${system}.toolchain
             ];
+            N64_INST = (self.packages.${system}.mkLibDragon {
+                rev = "f3aae88520fd9427c969961b556d1bccdb5c89de";
+                hash = "sha256-/yigAAPQWAZg5x7QbiHxdsd+PxuLLfD8oJFAweU0MoI=";
+              }).n64_inst;
           };
       }
     );
