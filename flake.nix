@@ -50,13 +50,12 @@ description = "Various Nintendo 64 Homebrew Development Tools";
           hash = "sha256-6PED7AAbNoQB+1zktw8mRkJgeEFsCjAaDXh71qYhduk=";
         };
 
-        # v18 does not build
-        bass-version = "v14";
+        bass-version = "v18";
         bass = pkgs.fetchFromGitHub {
           owner = "ARM9";
           repo = "bass";
-          rev = "78e297331587eff0b2107dabe81ee036d2d01780";
-          hash = "sha256-zYCj0JFEbS0MG3vJ0MgkXtZ/+4mJ14HDTs6C9jKEnJE=";
+          rev = bass-version;
+          hash = "sha256-xTKdgVcR2L+uWfj01Qhv2Ao9HDFBaAaM9yExhr6fmb4";
         };
       in
       {
@@ -97,10 +96,22 @@ description = "Various Nintendo 64 Homebrew Development Tools";
           version = bass-version;
           src = bass;
           sourceRoot = "source/bass";
-          installPhase = ''
-            mkdir -p $out/bin
-            cp ./bass $out/bin
+          postPatch = ''
+            # Fix build on OSX
+            substituteInPlace GNUmakefile \
+              --replace-fail 'ifneq ($(filter $(platform),linux bsd),)' "" \
+              --replace-fail prefix out
+
+            # Load architectures from the proper place
+            substituteInPlace core/utility.cpp \
+              --replace-fail "Path::program()" "\"$out/share/bass/\""
+
+            # Fix build on Linux
+            substituteInPlace ../nall/arithmetic.hpp \
+              --replace-fail "#pragma once" "#pragma once
+              #include <stdexcept>"
           '';
+          preInstall = "mkdir -p $out/bin";
         };
 
         packages.unfloader = pkgs.stdenv.mkDerivation {
