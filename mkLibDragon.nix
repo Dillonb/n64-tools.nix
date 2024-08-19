@@ -22,9 +22,18 @@ lib = pkgs.stdenv.mkDerivation {
   preInstall = "export N64_INST=$out";
 };
 mkTool = (import ./mkLibDragonTool.nix {pkgs = pkgs; libdragon_src = src; rev = rev; });
+tool_chksum64 = (mkTool "chksum64");
+tool_n64tool = (mkTool "n64tool");
+tool_n64sym = (mkTool "n64sym");
 in
 {
   lib = lib;
+
+  tools = {
+    chksum64 = tool_chksum64;
+    n64tool = tool_n64tool;
+    n64sym = tool_n64sym;
+  };
 
   n64_inst = pkgs.buildEnv {
     name = "libdragon-n64-inst";
@@ -32,9 +41,9 @@ in
       pkgsCross.buildPackages.binutils
       pkgsCross.buildPackages.gcc
       lib
-      (mkTool "chksum64")
-      (mkTool "n64tool")
-      (mkTool "n64sym")
+      tool_chksum64
+      tool_n64tool
+      tool_n64sym
     ];
   };
 }

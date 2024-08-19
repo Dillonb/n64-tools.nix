@@ -21,9 +21,10 @@ description = "Various Nintendo 64 Homebrew Development Tools";
         pkgs = import nixpkgs { inherit system; };
         pkgsCross = import nixpkgs { inherit system; crossSystem = { config = "mips64-elf"; }; };
 
-        libdragon = pkgs.fetchFromGitHub {
-          owner = "DragonMinded";
-          repo = "libdragon";
+        mkLibDragon = (import ./mkLibDragon.nix) { pkgs = pkgs; pkgsCross = pkgsCross; };
+
+        # Default version for tools and devshell in this Flake
+        libdragon = mkLibDragon {
           rev = "f3aae88520fd9427c969961b556d1bccdb5c89de";
           hash = "sha256-/yigAAPQWAZg5x7QbiHxdsd+PxuLLfD8oJFAweU0MoI=";
         };
@@ -64,37 +65,8 @@ description = "Various Nintendo 64 Homebrew Development Tools";
         };
       in
       {
-        packages.chksum64 = pkgs.stdenv.mkDerivation {
-          pname = "chksum64";
-          version = "1.2";
-
-          src = libdragon;
-
-          buildPhase = ''
-            $CC -o chksum64 tools/chksum64.c
-          '';
-
-          installPhase = ''
-            mkdir -p $out/bin
-            cp chksum64 $out/bin
-          '';
-        };
-
-        packages.n64tool = pkgs.stdenv.mkDerivation {
-          pname = "n64tool";
-          version = "1.0";
-
-          src = libdragon;
-
-          buildPhase = ''
-            $CC -o n64tool tools/n64tool.c
-          '';
-
-          installPhase = ''
-            mkdir -p $out/bin
-            cp n64tool $out/bin
-          '';
-        };
+        packages.chksum64 = libdragon.chksum64;
+        packages.n64tool = libdragon.n64tool;
 
         packages.bass_v14 = pkgs.stdenv.mkDerivation {
           pname = "bass";
@@ -146,7 +118,7 @@ description = "Various Nintendo 64 Homebrew Development Tools";
 
         packages.toolchain = pkgsCross.buildPackages.gcc;
 
-        packages.mkLibDragon = (import ./mkLibDragon.nix) {pkgs = pkgs; pkgsCross = pkgsCross; };
+        packages.mkLibDragon = mkLibDragon;
 
         apps.chksum64 = {
           type = "app";
@@ -166,15 +138,12 @@ description = "Various Nintendo 64 Homebrew Development Tools";
         devShells.default = pkgs.mkShell
           {
             buildInputs = [
-              self.packages.${system}.chksum64
-              self.packages.${system}.n64tool
+              libdragon.tools.chksum64
+              libdragon.tools.n64tool
               self.packages.${system}.toolchain
               self.packages.${system}.bass
             ];
-            N64_INST = (self.packages.${system}.mkLibDragon {
-                rev = "f3aae88520fd9427c969961b556d1bccdb5c89de";
-                hash = "sha256-/yigAAPQWAZg5x7QbiHxdsd+PxuLLfD8oJFAweU0MoI=";
-              }).n64_inst;
+            N64_INST = libdragon.n64_inst;
           };
       }
     );
