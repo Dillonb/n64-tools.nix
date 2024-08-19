@@ -49,6 +49,15 @@ description = "Various Nintendo 64 Homebrew Development Tools";
           rev = unfloader-version;
           hash = "sha256-6PED7AAbNoQB+1zktw8mRkJgeEFsCjAaDXh71qYhduk=";
         };
+
+        # v18 does not build
+        bass-version = "v14";
+        bass = pkgs.fetchFromGitHub {
+          owner = "ARM9";
+          repo = "bass";
+          rev = "78e297331587eff0b2107dabe81ee036d2d01780";
+          hash = "sha256-zYCj0JFEbS0MG3vJ0MgkXtZ/+4mJ14HDTs6C9jKEnJE=";
+        };
       in
       {
         packages.chksum64 = pkgs.stdenv.mkDerivation {
@@ -80,6 +89,17 @@ description = "Various Nintendo 64 Homebrew Development Tools";
           installPhase = ''
             mkdir -p $out/bin
             cp n64tool $out/bin
+          '';
+        };
+
+        packages.bass = pkgs.stdenv.mkDerivation {
+          pname = "bass";
+          version = bass-version;
+          src = bass;
+          sourceRoot = "source/bass";
+          installPhase = ''
+            mkdir -p $out/bin
+            cp ./bass $out/bin
           '';
         };
 
@@ -115,6 +135,7 @@ description = "Various Nintendo 64 Homebrew Development Tools";
               self.packages.${system}.chksum64
               self.packages.${system}.n64tool
               self.packages.${system}.toolchain
+              self.packages.${system}.bass
             ];
             N64_INST = (self.packages.${system}.mkLibDragon {
                 rev = "f3aae88520fd9427c969961b556d1bccdb5c89de";
