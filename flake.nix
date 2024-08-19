@@ -129,6 +129,11 @@ description = "Various Nintendo 64 Homebrew Development Tools";
           program = "${self.packages.${system}.unfloader}/bin/UNFLoader";
         };
 
+        apps.bass = {
+          type = "app";
+          program = "${self.packages.${system}.bass}/bin/bass";
+        };
+
         devShells.default = pkgs.mkShell
           {
             buildInputs = [
