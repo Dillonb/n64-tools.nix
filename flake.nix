@@ -14,6 +14,11 @@ description = "Various Nintendo 64 Homebrew Development Tools";
           version = "1.4.27";
           hash = "sha256-U3/J224e6hEN12YZgtxJoo3iKkUUtYjoozohEQpba0w=";
         };
+        "aarch64-linux" = {
+          url = "https://ftdichip.com/wp-content/uploads/2022/07/libftd2xx-arm-v8-1.4.27.tgz";
+          version = "1.4.27";
+          hash = "sha256-SOIC7M60y+nnf1RE74h9Zoc5OnTjPafeWmfCInxWeXA=";
+        };
       };
     in
     flake-utils.lib.eachDefaultSystem (system:
