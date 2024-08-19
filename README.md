@@ -8,3 +8,4 @@ Nix Flake with useful N64 homebrew development tools
 - n64tool
 - mips64-elf-gcc and binutils
 - UNFLoader
+- libdragon
