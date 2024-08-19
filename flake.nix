@@ -50,12 +50,17 @@ description = "Various Nintendo 64 Homebrew Development Tools";
           hash = "sha256-6PED7AAbNoQB+1zktw8mRkJgeEFsCjAaDXh71qYhduk=";
         };
 
-        bass-version = "v18";
-        bass = pkgs.fetchFromGitHub {
+        bass_v18 = pkgs.fetchFromGitHub {
           owner = "ARM9";
           repo = "bass";
-          rev = bass-version;
+          rev = "v18";
           hash = "sha256-xTKdgVcR2L+uWfj01Qhv2Ao9HDFBaAaM9yExhr6fmb4";
+        };
+        bass_v14 = pkgs.fetchFromGitHub {
+          owner = "ARM9";
+          repo = "bass";
+          rev = "78e297331587eff0b2107dabe81ee036d2d01780";
+          hash = "sha256-zYCj0JFEbS0MG3vJ0MgkXtZ/+4mJ14HDTs6C9jKEnJE=";
         };
       in
       {
@@ -91,10 +96,21 @@ description = "Various Nintendo 64 Homebrew Development Tools";
           '';
         };
 
-        packages.bass = pkgs.stdenv.mkDerivation {
+        packages.bass_v14 = pkgs.stdenv.mkDerivation {
           pname = "bass";
-          version = bass-version;
-          src = bass;
+          version = "v14";
+          src = bass_v14;
+          sourceRoot = "source/bass";
+          installPhase = ''
+            mkdir -p $out/bin
+            cp ./bass $out/bin
+          '';
+        };
+
+        packages.bass_v18 = pkgs.stdenv.mkDerivation {
+          pname = "bass";
+          version = "v18";
+          src = bass_v18;
           sourceRoot = "source/bass";
           postPatch = ''
             # Fix build on OSX
@@ -113,6 +129,8 @@ description = "Various Nintendo 64 Homebrew Development Tools";
           '';
           preInstall = "mkdir -p $out/bin";
         };
+
+        packages.bass = self.packages.${system}.bass_v14; # Default to v14 - both krom's and my tests require it
 
         packages.unfloader = pkgs.stdenv.mkDerivation {
           pname = "unfloader";
