@@ -56,12 +56,6 @@
           hash = "sha256-6PED7AAbNoQB+1zktw8mRkJgeEFsCjAaDXh71qYhduk=";
         };
 
-        bass_v18 = pkgs.fetchFromGitHub {
-          owner = "ARM9";
-          repo = "bass";
-          rev = "v18";
-          hash = "sha256-xTKdgVcR2L+uWfj01Qhv2Ao9HDFBaAaM9yExhr6fmb4";
-        };
         bass_v14 = pkgs.fetchFromGitHub {
           owner = "ARM9";
           repo = "bass";
@@ -83,29 +77,6 @@
             mkdir -p $out/bin
             cp ./bass $out/bin
           '';
-        };
-
-        packages.bass_v18 = pkgs.stdenv.mkDerivation {
-          pname = "bass";
-          version = "v18";
-          src = bass_v18;
-          sourceRoot = "source/bass";
-          postPatch = ''
-            # Fix build on OSX
-            substituteInPlace GNUmakefile \
-              --replace-fail 'ifneq ($(filter $(platform),linux bsd),)' "" \
-              --replace-fail prefix out
-
-            # Load architectures from the proper place
-            substituteInPlace core/utility.cpp \
-              --replace-fail "Path::program()" "\"$out/share/bass/\""
-
-            # Fix build on Linux
-            substituteInPlace ../nall/arithmetic.hpp \
-              --replace-fail "#pragma once" "#pragma once
-              #include <stdexcept>"
-          '';
-          preInstall = "mkdir -p $out/bin";
         };
 
         packages.bass = self.packages.${system}.bass_v14; # Default to v14 - both krom's and my tests require it
