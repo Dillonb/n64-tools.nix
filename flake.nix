@@ -70,9 +70,9 @@ description = "Various Nintendo 64 Homebrew Development Tools";
         };
       in
       {
-        packages.chksum64 = libdragon.chksum64;
-        packages.n64tool = libdragon.n64tool;
-        packages.n64sym = libdragon.n64sym;
+        packages.chksum64 = libdragon.tools.chksum64;
+        packages.n64tool = libdragon.tools.n64tool;
+        packages.n64sym = libdragon.tools.n64sym;
 
         packages.bass_v14 = pkgs.stdenv.mkDerivation {
           pname = "bass";
