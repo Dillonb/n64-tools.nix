@@ -1,0 +1,31 @@
+name: Build and push to Cachix
+
+on:
+  push:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v25
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+    - uses: cachix/cachix-action@v14
+      with:
+        name: n64-tools
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+    - run: nix build .#chksum64
+    - run: nix build .#n64tool
+    - run: nix build .#n64sym
+    - run: nix build .#bass_v14
+    - run: nix build .#bass_v18
+    - run: nix build .#bass # should be no-op
+    - run: nix build .#unfloader
+    - run: nix build .#toolchain
+
+    # A final check, shouln't need to build anything, but just in case I ever forget to add something above but do add it to the shell
+    - run: nix develop --command bash -c "echo OK"
