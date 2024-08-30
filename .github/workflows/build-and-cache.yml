@@ -20,7 +20,6 @@ jobs:
       - run: nix build .#n64tool
       - run: nix build .#n64sym
       - run: nix build .#bass_v14
-      - run: nix build .#bass_v18
       - run: nix build .#bass # should be no-op
       - run: nix build .#unfloader
       - run: nix build .#toolchain
