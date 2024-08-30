@@ -1,5 +1,5 @@
 {
-description = "Various Nintendo 64 Homebrew Development Tools";
+  description = "Various Nintendo 64 Homebrew Development Tools";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";

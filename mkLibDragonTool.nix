@@ -7,10 +7,10 @@ pkgs.stdenv.mkDerivation {
 
   buildPhase = ''
     $CC -o ${tool} tools/${tool}.c
-    '';
+  '';
 
   installPhase = ''
     mkdir -p $out/bin
     cp ${tool} $out/bin
-    '';
+  '';
 }
