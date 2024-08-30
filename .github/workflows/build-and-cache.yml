@@ -25,5 +25,5 @@ jobs:
       - run: nix build .#unfloader
       - run: nix build .#toolchain
 
-    # A final check, shouln't need to build anything, but just in case I ever forget to add something above but do add it to the shell
-    - run: nix develop --command bash -c "echo OK"
+      # A final check, shouln't need to build anything, but just in case I ever forget to add something above but do add it to the shell
+      - run: nix develop --command bash -c "echo OK"
