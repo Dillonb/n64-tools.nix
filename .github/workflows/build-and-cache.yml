@@ -5,15 +5,27 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-nix:
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-13 # x64
-          - macos-14 # arm64
+  build-nix-linux-x64:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v25
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - uses: cachix/cachix-action@v14
+        with:
+          name: n64-tools
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+      - run: nix build .#unfloader
+      - run: nix build .#toolchain
+      - run: nix build .#chksum64
+      - run: nix build .#n64tool
+      - run: nix build .#n64sym
+      - run: nix build .#bass_v14
+      - run: nix build .#bass # should be no-op
 
-    runs-on: ${{ matrix.os }}
+  build-nix-macos-x64:
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v25
@@ -27,12 +39,9 @@ jobs:
       - run: nix build .#chksum64
       - run: nix build .#n64tool
       - run: nix build .#n64sym
-      # - run: nix build .#bass_v14
-      # - run: nix build .#bass # should be no-op
 
-  # UNFLoader does not build on MacOS (missing ftd2xx dependency)
-  build-unfloader:
-    runs-on: ubuntu-latest
+  build-nix-macos-arm64:
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v25
@@ -42,4 +51,9 @@ jobs:
         with:
           name: n64-tools
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-      - run: nix build .#unfloader
+      - run: nix build .#toolchain
+      - run: nix build .#chksum64
+      - run: nix build .#n64tool
+      - run: nix build .#n64sym
+      - run: nix build .#bass_v14
+      - run: nix build .#bass # should be no-op
