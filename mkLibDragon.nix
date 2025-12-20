@@ -31,7 +31,7 @@ in
   lib = lib;
 
   tools = {
-    chksum64 = tool_chksum64;
+    # chksum64 = tool_chksum64;
     n64tool = tool_n64tool;
     n64sym = tool_n64sym;
   };
@@ -42,7 +42,7 @@ in
       pkgsCross.buildPackages.binutils
       pkgsCross.buildPackages.gcc
       lib
-      tool_chksum64
+      # tool_chksum64
       tool_n64tool
       tool_n64sym
     ];
