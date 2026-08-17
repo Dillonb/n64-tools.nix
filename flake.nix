@@ -64,7 +64,7 @@
         };
       in
       {
-        packages.chksum64 = libdragon.tools.chksum64;
+        packages.chksum64 = pkgs.callPackage ./chksum64 { };
         packages.n64tool = libdragon.tools.n64tool;
         packages.n64sym = libdragon.tools.n64sym;
 
@@ -115,7 +115,7 @@
         devShells.default = pkgs.mkShell
           {
             buildInputs = [
-              libdragon.tools.chksum64
+              self.packages.${system}.chksum64
               libdragon.tools.n64tool
               libdragon.tools.n64sym
               self.packages.${system}.toolchain
